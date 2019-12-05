@@ -3,13 +3,12 @@ name: Laravel
 on: [push]
 
 jobs:
+  runs-on: ubuntu-latest
   php-cs-fixer:
-    runs-on: ubuntu-latest
     steps:
-      - name: PHP Syntax Checker (Lint)
-        uses: StephaneBour/actions-php-lint@7.3
+      - name: OSKAR-PHP-CS-Fixer
+        uses: OskarStark/php-cs-fixer-ga@2.15.3
   laravel-tests:
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Install Dependencies
