@@ -45,5 +45,4 @@ class InkyServiceProvider extends ServiceProvider
     {
         $this->app['view']->addExtension('inky.php', 'inky');
     }
-
 }
