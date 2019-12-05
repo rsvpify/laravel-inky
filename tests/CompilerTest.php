@@ -9,7 +9,6 @@ use Mockery;
 
 class CompilerTest extends AbstractTestCase
 {
-    
     public function testCompile()
     {
         $compiler = $this->getCompiler();

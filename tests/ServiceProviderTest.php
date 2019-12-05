@@ -9,5 +9,4 @@ use Rsvpify\LaravelInky\InkyCompilerEngine;
 class ServiceProviderTest extends AbstractTestCase
 {
     use ServiceProviderTrait;
-    
 }

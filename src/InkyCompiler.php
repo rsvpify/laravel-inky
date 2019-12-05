@@ -57,5 +57,4 @@ class InkyCompiler extends Compiler implements CompilerInterface
     {
         return $this->blade;
     }
-
 }

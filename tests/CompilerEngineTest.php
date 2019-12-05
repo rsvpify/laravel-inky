@@ -84,5 +84,4 @@ class CompilerEngineTest extends AbstractTestCase
         
         return new InkyCompilerEngine($compiler, $files);
     }
-    
 }
