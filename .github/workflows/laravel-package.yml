@@ -19,6 +19,6 @@ jobs:
         with:
           php-version: '7.2'
       - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+        run: composer install
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: vendor/bin/phpunit
