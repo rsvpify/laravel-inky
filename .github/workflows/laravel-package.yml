@@ -1,21 +1,20 @@
-name: Testing Laravel
+name: Testing Laravel Package
 
 on: [push, pull_request]
 
 jobs:
   laravel:
-    name: Laravel (PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
+    name: Laravel Package (PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
     runs-on: ${{ matrix.operating-system }}
     strategy:
-      fail-fast: false
       matrix:
-        operating-system: [ubuntu-latest, macOS-latest]
-        php-versions: ['7.2', '7.3']
+        operating-system: [ubuntu-latest]
+        php-versions: ['7.2']
     steps:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Setup PHP, with composer and extensions
-        uses: shivammathur/setup-php@v1 #https://github.com/shivammathur/setup-php
+        uses: shivammathur/setup-php@v1
         with:
           php-version: ${{ matrix.php-versions }}
           extension-csv: mbstring, dom, fileinfo
@@ -24,7 +23,7 @@ jobs:
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
       - name: Install Composer dependencies
         run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
-      - name: PHP CS Fixer
+      - name: Check styling with PHP CS Fixer
         uses: StephaneBour/actions-php-cs-fixer@1.0
       - name: Test with phpunit
         run: vendor/bin/phpunit --coverage-text
