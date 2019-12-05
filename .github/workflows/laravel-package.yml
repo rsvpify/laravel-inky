@@ -7,11 +7,9 @@ jobs:
     name: PHP-CS-Fixer
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: PHP-CS-Fixer
-        uses: docker://oskarstark/php-cs-fixer-ga
-        with:
-          args: /src --dry-run -vvv --stop-on-violation
+      - uses: actions/checkout@v1
+      - name: PHP CS Fixer
+        uses: StephaneBour/actions-php-cs-fixer@1.0
   laravel-tests:
     runs-on: ubuntu-latest
     steps:
