@@ -1,4 +1,4 @@
-name: Laravel
+name: Laravel Package CI
 
 on: [push]
 
@@ -6,12 +6,14 @@ jobs:
   php-cs-fixer:
     name: PHP-CS-Fixer
     runs-on: ubuntu-latest
+    php-versions: ['7.2', '7.3']
     steps:
       - uses: actions/checkout@v1
       - name: PHP CS Fixer
         uses: StephaneBour/actions-php-cs-fixer@1.0
   laravel-tests:
     runs-on: ubuntu-latest
+    php-versions: ['7.2', '7.3']
     steps:
       - uses: actions/checkout@v1
       - name: Install Dependencies
