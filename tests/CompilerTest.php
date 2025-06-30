@@ -20,7 +20,7 @@ class CompilerTest extends AbstractTestCase
             ->with('html')->andReturn('html');
 
         $compiler->getFiles()->shouldReceive('put')->once()
-            ->with(__DIR__ . '/e13dbc54cb72a29f66053c494f2c456242d1fefa.php', 'html');
+            ->with(__DIR__ . '/b5ee0bc34d1063d878b5fea7206bb2f5.php', 'html');
 
         $this->assertNull($compiler->compile('path'));
     }
@@ -65,7 +65,7 @@ class CompilerTest extends AbstractTestCase
         $this->assertEquals('container', $compiler->compileString('<container></container>'));
     }
 
-    protected function getCompiler()
+    protected function getCompiler(): InkyCompiler
     {
         $blade = Mockery::mock(BladeCompiler::class);
         $files = Mockery::mock(Filesystem::class);

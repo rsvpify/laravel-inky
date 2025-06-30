@@ -85,7 +85,7 @@ class CompilerEngineTest extends AbstractTestCase
         $this->assertStringContainsString('<p style="display: none;">testy</p>', $html);
     }
 
-    protected function getEngine()
+    protected function getEngine(): InkyCompilerEngine
     {
         $compiler = Mockery::mock(CompilerInterface::class);
         $filesystem = Mockery::mock(Filesystem::class);
