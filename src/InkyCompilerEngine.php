@@ -2,6 +2,7 @@
 
 namespace Rsvpify\LaravelInky;
 
+use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\DomCrawler\Crawler;
 use Illuminate\View\Engines\CompilerEngine;
@@ -44,11 +45,38 @@ class InkyCompilerEngine extends CompilerEngine
 
         $inliner = new CssToInlineStyles;
 
-        return $inliner->convert($htmlWithoutLinks, $combinedStyles);
+        return $inliner->convert(
+            $this->appendExternalMediaQueries($htmlWithoutLinks, $combinedStyles),
+            $combinedStyles
+        );
     }
 
     public function getFiles()
     {
         return $this->filesystem;
+    }
+
+    protected function appendExternalMediaQueries(string $html, string $css): string
+    {
+        if (($mediaQueries = $this->extractMediaQueries($css)) === '') {
+            return $html;
+        }
+
+        $styleTag = "<style>\n{$mediaQueries}\n</style>";
+
+        if (Str::contains($html, '</head>')) {
+            return Str::replaceFirst('</head>', "{$styleTag}\n</head>", $html);
+        }
+
+        return "{$styleTag}\n{$html}";
+    }
+
+    protected function extractMediaQueries(string $css): string
+    {
+        return Str::of($css)
+            ->matchAll('/@media[^{]*+{(?:[^{}]++|{[^{}]*+})*+}/i')
+            ->map(fn ($query) => trim($query))
+            ->filter()
+            ->implode("\n\n");
     }
 }
