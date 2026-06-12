@@ -6,12 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 class InkyServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap the application services.
-     *
-     * @return void
-     */
-    public function boot()
+    public function boot(): void
     {
         $this->registerExtension();
 
@@ -20,12 +15,7 @@ class InkyServiceProvider extends ServiceProvider
         ]);
     }
 
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
         $app = $this->app;
         $resolver = $app['view.engine.resolver'];
@@ -36,12 +26,10 @@ class InkyServiceProvider extends ServiceProvider
             return new InkyCompiler($app['blade.compiler'], $app['files'], $cache);
         });
 
-        $resolver->register('inky', function () use ($app) {
-            return new InkyCompilerEngine($app['inky.compiler'], $app['files']);
-        });
+        $resolver->register('inky', fn () => new InkyCompilerEngine($app['inky.compiler'], $app['files']));
     }
 
-    protected function registerExtension()
+    protected function registerExtension(): void
     {
         $this->app['view']->addExtension('inky.php', 'inky');
     }

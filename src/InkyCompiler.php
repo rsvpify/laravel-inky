@@ -5,25 +5,23 @@ namespace Rsvpify\LaravelInky;
 use IncentFit\Inky\Inky;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\View\Compilers\Compiler;
+use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Compilers\CompilerInterface;
 
 class InkyCompiler extends Compiler implements CompilerInterface
 {
-    protected $inky;
+    protected Inky $inky;
 
-    protected $blade;
+    protected ?string $path = null;
 
-    protected $path;
-
-    public function __construct(Compiler $blade, Filesystem $files, $cachePath)
+    public function __construct(protected BladeCompiler $blade, Filesystem $files, string $cachePath)
     {
         parent::__construct($files, $cachePath);
 
-        $this->blade = $blade;
         $this->inky = new Inky;
     }
 
-    public function compile($path = null)
+    public function compile($path = null): void
     {
         if ($path) {
             $this->setPath($path);
@@ -36,29 +34,29 @@ class InkyCompiler extends Compiler implements CompilerInterface
         }
     }
 
-    public function getPath()
+    public function getPath(): ?string
     {
         return $this->path;
     }
 
-    public function setPath($path)
+    public function setPath(string $path): static
     {
         $this->path = $path;
 
         return $this;
     }
 
-    public function compileString($value)
+    public function compileString(string $value): string
     {
         return $this->blade->compileString($this->inky->releaseTheKraken($value));
     }
 
-    public function getFiles()
+    public function getFiles(): Filesystem
     {
         return $this->files;
     }
 
-    public function getBlade()
+    public function getBlade(): BladeCompiler
     {
         return $this->blade;
     }

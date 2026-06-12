@@ -11,21 +11,15 @@ use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 class InkyCompilerEngine extends CompilerEngine
 {
-    protected $filesystem;
-
-    public function __construct(CompilerInterface $compiler, Filesystem $filesystem)
+    public function __construct(CompilerInterface $compiler, protected Filesystem $filesystem)
     {
         parent::__construct($compiler);
-
-        $this->filesystem = $filesystem;
     }
 
-    public function get($inkyFilePath, array $data = [])
+    public function get($inkyFilePath, array $data = []): string
     {
-        // Compiles the inky template as if it were a regular blade file
         $html = parent::get($inkyFilePath, $data);
 
-        // remove css stylesheet links from email's HTML
         $crawler = new Crawler;
         $crawler->addHtmlContent($html);
         $cssLinks = $crawler->filter('link[rel=stylesheet]');
@@ -38,10 +32,9 @@ class InkyCompilerEngine extends CompilerEngine
 
         $htmlWithoutLinks = $crawler->html();
 
-        // Combine all stylesheets into 1 string of CSS
-        $combinedStyles = collect(config('inky.stylesheets'))->map(function ($path) {
-            return $this->filesystem->get(base_path($path));
-        })->implode("\n\n");
+        $combinedStyles = collect(config('inky.stylesheets'))
+            ->map(fn ($path) => $this->filesystem->get(base_path($path)))
+            ->implode("\n\n");
 
         $inliner = new CssToInlineStyles;
 
@@ -51,7 +44,7 @@ class InkyCompilerEngine extends CompilerEngine
         );
     }
 
-    public function getFiles()
+    public function getFiles(): Filesystem
     {
         return $this->filesystem;
     }
