@@ -6,29 +6,44 @@ on:
 
 jobs:
   laravel:
-    name: Laravel Package (PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
+    name: Laravel ${{ matrix.laravel }} (PHP ${{ matrix.php-version }} on ${{ matrix.operating-system }})
 
     runs-on: ${{ matrix.operating-system }}
 
     strategy:
+      fail-fast: false
       matrix:
-        operating-system: [ubuntu-latest]
-        php-versions: ['8.4']
+        include:
+          - operating-system: ubuntu-latest
+            php-version: '8.4'
+            laravel: '12'
+            illuminate-version: '^12.55'
+            testbench-version: '^10.11'
+          - operating-system: ubuntu-latest
+            php-version: '8.4'
+            laravel: '13'
+            illuminate-version: '^13.10'
+            testbench-version: '^11.1'
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
 
       - name: Setup PHP, with composer and extensions
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: ${{ matrix.php-version }}
+
+      - name: Configure Laravel dependencies
+        run: |
+          composer require --no-interaction --no-progress --no-update "illuminate/support:${{ matrix.illuminate-version }}" "illuminate/view:${{ matrix.illuminate-version }}"
+          composer require --dev --no-interaction --no-progress --no-update "orchestra/testbench:${{ matrix.testbench-version }}"
 
       - name: Install Composer dependencies
-        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+        run: composer update --no-interaction --no-progress --prefer-dist --optimize-autoloader
 
       - name: Check styling with PHP CS Fixer
-        uses: StephaneBour/actions-php-cs-fixer@1.0
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff --config=.php-cs-fixer.dist.php
 
       - name: Test with phpunit
-        run: vendor/bin/phpunit --coverage-text
+        run: vendor/bin/phpunit

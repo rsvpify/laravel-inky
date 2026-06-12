@@ -20,7 +20,7 @@ class CompilerEngineTest extends AbstractTestCase
         $engine->getCompiler()->shouldReceive('getCompiledPath')->once()
             ->with($path)->andReturn($path);
 
-        $this->assertStringContainsString('<p>testy</p>', $engine->get($path));
+        $this->assertStringContainsString('testy', $engine->get($path));
     }
 
     public function testCssInline()

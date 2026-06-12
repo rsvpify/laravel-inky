@@ -3,12 +3,14 @@
 namespace Rsvpify\Tests\LaravelInky;
 
 use Rsvpify\LaravelInky\InkyServiceProvider;
-use GrahamCampbell\TestBench\AbstractPackageTestCase;
+use Orchestra\Testbench\TestCase;
 
-abstract class AbstractTestCase extends AbstractPackageTestCase
+abstract class AbstractTestCase extends TestCase
 {
-    protected static function getServiceProviderClass(): string
+    protected function getPackageProviders($app): array
     {
-        return InkyServiceProvider::class;
+        return [
+            InkyServiceProvider::class,
+        ];
     }
 }
