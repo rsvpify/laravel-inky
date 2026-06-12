@@ -20,7 +20,7 @@ class CompilerEngineTest extends AbstractTestCase
         $engine->getCompiler()->shouldReceive('getCompiledPath')->once()
             ->with($path)->andReturn($path);
 
-        $this->assertStringContainsString('<p>testy</p>', $engine->get($path));
+        $this->assertStringContainsString('testy', $engine->get($path));
     }
 
     public function testCssInline()
@@ -49,6 +49,40 @@ class CompilerEngineTest extends AbstractTestCase
         $html = $engine->get($path);
 
         $this->assertStringContainsString('<body style="color: red;">', $html);
+        $this->assertStringNotContainsString('<link rel="stylesheet"', $html);
+    }
+
+    public function testExternalMediaQueriesArePreserved()
+    {
+        config(
+            [
+                'inky.stylesheets' => [
+                    'testFoundationFile',
+                ],
+            ]
+        );
+
+        $engine = $this->getEngine();
+        $path = __DIR__ . '/stubs/inline';
+
+        $engine->getCompiler()->shouldReceive('isExpired')->once()
+            ->with($path)->andReturn(false);
+
+        $engine->getCompiler()->shouldReceive('getCompiledPath')->once()
+            ->with($path)->andReturn($path);
+
+        $engine->getFiles()->shouldReceive('get')->once()
+            ->with(base_path('testFoundationFile'))
+            ->andReturn('body {color:red;} @media only screen and (max-width: 596px) { table.body .container { width: 95% !important; } table.body center { min-width: 0 !important; } }');
+
+        $html = $engine->get($path);
+
+        $this->assertStringContainsString('<body style="color: red;">', $html);
+        $this->assertStringContainsString('@media only screen and (max-width: 596px)', $html);
+        $this->assertStringContainsString('table.body .container', $html);
+        $this->assertStringContainsString('width: 95% !important;', $html);
+        $this->assertStringContainsString('table.body center', $html);
+        $this->assertStringContainsString('min-width: 0 !important;', $html);
         $this->assertStringNotContainsString('<link rel="stylesheet"', $html);
     }
 

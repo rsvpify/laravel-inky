@@ -4,6 +4,7 @@ composer.lock
 /.vscode
 npm-debug.log
 .php_cs.cache
+.php-cs-fixer.cache
 .phpunit.result.cache
 .DS_Store
 /.phpunit.cache/
